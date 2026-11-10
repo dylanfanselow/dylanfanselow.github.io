@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Heat Transfer Chamber · Dylan Fanselow</title>
+  <meta name="description" content="A test chamber for additively manufactured, electroplated TPMS lattices used as heat exchangers: CAD, specimens, plating, and the CFD and ML plan around it.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Dylan Fanselow</a>
+    <nav class="nav"><a href="../index.html#research">Research</a><a href="../index.html#fun">For fun</a><a href="https://github.com/dylanfanselow">GitHub</a></nav>
+  </div>
+</header>
+
+<main class="article">
+  <p class="crumb"><a href="../index.html#research">← All projects</a></p>
+
+  <div class="project-head">
+    <h1>Heat transfer chamber: 3D-printed lattices as heat exchangers</h1>
+    <p class="meta">Research · 2026 · SolidWorks, FDM 3D printing, electroplating, Ansys Fluent</p>
+    <p class="summary">A test chamber for measuring how well 3D-printed, electroplated TPMS lattices move heat away from a hot plate, and the CFD and machine-learning plan for choosing which lattices to build next.</p>
+  </div>
+
+  <figure class="hero-fig wide">
+    <img src="../assets/img/chamber/test_chamber.jpg" alt="SolidWorks model of the heat transfer test chamber: a flow channel with inlet and outlet ports passing over a lattice heat sink on a copper plate">
+    <figcaption>The test chamber in SolidWorks. Coolant enters and leaves through the end ports, and the channel carries it across a lattice heat sink sitting on a copper heater plate.</figcaption>
+  </figure>
+
+  <h2>The project</h2>
+  <p>TPMS lattices make promising heat exchangers. They pack a lot of surface area into a small volume, their smooth channels let fluid through easily, and they can only be made by 3D printing. Plating a printed polymer lattice with metal makes it conduct heat far better.</p>
+  <p>Two results from our literature review shaped the plan:</p>
+  <ul>
+    <li>In plated primitive lattices, thermal conductivity rose by about 0.059 W/m·K for every micrometre of copper (Cheung et al., 2025).</li>
+    <li>TPMS-based pin fins cut pressure drop by up to 54% in a microchannel heat sink while improving thermal efficiency (Raafat et al., 2025).</li>
+  </ul>
+  <p>The open problem is consistency. Electroplating a complex lattice evenly is hard: coatings build up at exposed edges and corners and thin out inside. The project, <em>Active learning optimization of electroplating for enhanced coating uniformity and thermal properties</em>, aims to link lattice geometry, plating conditions and thermal performance so you can choose a lattice for the property you care about.</p>
+  <p>The work is with Alan, mentored by Brennan Birn, in collaboration with Yuxin Hu and Prof. Peter Hosemann.</p>
+  <span class="todo">Check the names, roles and group or course here. Also say how this connects to the earlier capstone CFD pipeline, if you want it mentioned.</span>
+
+  <h2>What I did</h2>
+
+  <h3>The test chamber</h3>
+  <p>The chamber is a sealed channel that runs coolant across a lattice specimen sitting on a copper heater plate, with inlet and outlet ports at each end. It turns "is this lattice a good heat exchanger?" into numbers: the temperature drop across the specimen and the pressure drop needed to push the flow through.</p>
+  <figure>
+    <img src="../assets/img/chamber/test_chamber_view2.jpg" alt="Second view of the test chamber CAD model" loading="lazy">
+    <figcaption>Another view of the chamber, showing the specimen pocket over the copper plate.</figcaption>
+  </figure>
+  <span class="todo">Your literature-review deck credits Alan with the chamber CAD, but your resume says you designed it. Make this section match what you did, and add details: dimensions, sensors (thermocouples, pressure, IR camera), and design iterations.</span>
+
+  <h3>Printed, electroplated specimens</h3>
+  <p>The specimens are FDM-printed TPMS lattices, electroplated to give them a metal surface for conductivity and durability.</p>
+  <div class="grid-2">
+    <figure><img src="../assets/img/chamber/electroplated_lattice.jpg" alt="Electroplated 3D-printed lattice specimen with a metallic finish" loading="lazy"><figcaption>An electroplated lattice specimen</figcaption></figure>
+    <figure><img src="../assets/img/chamber/plating_setup.jpg" alt="A lattice suspended in a green nickel plating bath on a stirring hotplate" loading="lazy"><figcaption>Plating a lattice in a nickel bath on a stirred hotplate</figcaption></figure>
+  </div>
+
+  <h3>Literature review and the plan</h3>
+  <p>We reviewed work on electroplating optimization, plating TPMS structures, simulating coating thickness, thermal performance of plated lattices, and the role of surface curvature. From that, we proposed a desirability function built on the 200+ lattices we'd already measured. You give it a lattice's composition and the plating solution, choose which properties matter, and it ranks designs. The work runs on three fronts:</p>
+  <ol>
+    <li><strong>Digital lattice metrics:</strong> curvature descriptors for hybrid lattices, from my <a href="tpms-curvature.html">MATLAB curvature tool</a>.</li>
+    <li><strong>Computational plating models:</strong> fixed-mesh electrochemical simulation, possibly smoothed-particle hydrodynamics, to predict coating thickness.</li>
+    <li><strong>Experiments:</strong> coating uniformity measured by computer vision on cross-sections, and thermal performance from the chamber (with IR imaging and CFD) and pressure drop.</li>
+  </ol>
+  <span class="todo">Add results from the chamber once you have them, such as a temperature or IR plot, or plated against unplated performance.</span>
+
+  <h2>What I learned</h2>
+  <ul class="learned">
+    <li><strong>Thermal performance is a trade-off.</strong> More surface area and thicker plating move more heat, but every added feature costs pressure drop. The chamber has to measure both, or a "better" lattice might just be harder to push fluid through.</li>
+    <li><strong>Manufacturing is part of the design.</strong> How evenly a lattice plates depends on its geometry. That's why curvature descriptors belong in the same model as the thermal tests.</li>
+    <li><strong>Read the field before building.</strong> The literature review showed what had already been measured, what nobody had tried (most plating studies use one lattice type and no physical thermal test), and where our data could add something new.</li>
+  </ul>
+  <span class="todo">Rewrite in your own words, especially the CAD and hands-on lessons (design for sealing and printability, plating defects such as dendrites).</span>
+</main>
+
+<footer class="site-footer"><div class="wrap">© 2026 Dylan Fanselow · <a href="../index.html">Home</a></div></footer>
+</body>
+</html>
