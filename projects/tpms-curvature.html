@@ -30,9 +30,12 @@
     </ul>
   </div>
 
-  <figure class="hero-fig">
-    <img src="../assets/img/chamber/electroplated_lattice.jpg" alt="An electroplated 3D-printed lattice specimen">
-    <figcaption>A printed lattice after electroplating. How evenly the metal coats a lattice depends on how its surface curves, and that's what the descriptors measure.</figcaption>
+  <figure class="hero-fig wide">
+    <div class="grid-2">
+      <img src="../assets/img/tpms/curves_t0.jpg" alt="Dense red and blue lines of curvature traced over one unit cell of the gyroid at t = 0">
+      <img src="../assets/img/tpms/curves_t08.jpg" alt="Lines of curvature on the gyroid at t = 0.8, where the surface has shifted toward one channel">
+    </div>
+    <figcaption>Principal-curvature lines traced over one unit cell of the gyroid at t = 0 (left) and t = 0.8 (right). Red (k₁) lines follow the direction of strongest bending and blue (k₂) the weakest. Raising t pushes the surface into one of the two channels, and the network wraps tighter around the thickening struts.</figcaption>
   </figure>
 
   <h2>The project</h2>
@@ -92,30 +95,18 @@
     <p style="font-size:.88rem;color:var(--muted);margin-top:.6rem">Slice with I = N = 0: gyroid fraction on x, primitive fraction on y, and diamond making up the rest. White dots are the lattices that were actually simulated.</p>
   </div>
 
-  <span class="todo">Swap in your v10 heatmaps or a figure built from a v10 CSV, if you have one. These are from v8 and colour by C only. Also: TPMS_Metrics_Calculator (the regression of curvature against mechanical outputs) has your mentor Brennan's file path in it. If it started from his code, credit him here, or leave it off.</span>
 
   <h3>What I learned</h3>
-  <ul class="learned">
-    <li><strong>A simple-looking formula can hide a sign error.</strong> The first versions computed mean curvature as a magnitude, so it was always positive. That silently broke the shape index on concave regions, while C and Gaussian curvature were unaffected. Projecting onto the vertex normal fixed it, and the lesson was to check each descriptor against a surface with known curvature.</li>
-    <li><strong>Interpolation can invent features.</strong> Cubic <code>griddata</code> rang between sparse samples and drew peaks that weren't in the data. Natural-neighbour interpolation, which doesn't extrapolate past the samples, gave honest maps.</li>
-    <li><strong>Choose the outlier threshold from the physics.</strong> A 3×MAD filter was clipping genuine high-curvature junctions. 5×MAD still removes mesh artefacts but keeps real geometry.</li>
-  </ul>
+  <p>The biggest lesson from this tool was how easy it is for a result to look right and still be wrong. In early versions, mean curvature was computed as a magnitude, so it was always positive. That quietly broke the shape index on concave regions while every other signal looked fine. Fixing it meant projecting onto the vertex normal, and since then I check each descriptor against a surface where I already know the answer.</p>
+  <p>Plotting taught me something similar. My first heatmaps used cubic interpolation, which drew peaks between sparse samples that weren't actually in the data. Switching to natural-neighbour interpolation gave maps I could trust. I also found that my outlier filter was clipping real, sharp junctions in the lattice, so I loosened it from 3 to 5 times the MAD. Each of these changes came from looking closely at the output and asking whether the physics made sense.</p>
 
   <hr>
 
   <span class="part-label">Part 2</span>
   <h2 style="margin-top:.2em">3D: curve mapping on the analytic gyroid</h2>
 
-  <figure class="wide">
-    <div class="grid-2">
-      <img src="../assets/img/tpms/curves_t0.jpg" alt="Dense red and blue lines of curvature traced over one unit cell of the gyroid at t = 0" loading="lazy">
-      <img src="../assets/img/tpms/curves_t08.jpg" alt="Lines of curvature on the gyroid at t = 0.8, where the surface has shifted toward one channel" loading="lazy">
-    </div>
-    <figcaption>Lines of curvature traced over one unit cell of the gyroid at t = 0 (left) and t = 0.8 (right). Red (k₁) lines follow the direction of strongest bending and blue (k₂) the weakest. Raising t pushes the surface into one of the two channels, and the network wraps tighter around the thickening struts.</figcaption>
-  </figure>
-
   <h3>What I did</h3>
-  <p>Part 1 measures curvature point by point. Part 2 asks how the curvature is <em>organised</em> across the structure. Working directly from the gyroid's level-set equation, <code>sin x cos y + sin y cos z + sin z cos x = t</code>, rather than from a mesh, the tool traces two families of curves on the surface:</p>
+  <p>The curve networks at the top of this page come from this tool. Part 1 measures curvature point by point. Part 2 asks how the curvature is <em>organised</em> across the structure. Working directly from the gyroid's level-set equation, <code>sin x cos y + sin y cos z + sin z cos x = t</code>, rather than from a mesh, the tool traces two families of curves on the surface:</p>
   <ul>
     <li><strong>Lines of curvature</strong> follow the directions of maximum and minimum bending.</li>
     <li><strong>Asymptotic curves</strong> follow the directions in which the surface doesn't bend at all (zero normal curvature).</li>
@@ -164,13 +155,8 @@
   </ul>
 
   <h3>What I learned</h3>
-  <ul class="learned">
-    <li><strong>An analytic surface makes a strong reference.</strong> Working from the level-set equation removed mesh noise entirely, and made it possible to validate every quantity two independent ways.</li>
-    <li><strong>A number is only useful with its uncertainty.</strong> Bootstrapping over curves showed which descriptors were stable and which needed more seed points. That became its own sampling study.</li>
-    <li><strong>Some descriptors repeat information.</strong> Several curve descriptors turn out to be identities of point curvature, so the output separates new information from redundant information before anything goes into a PCA.</li>
-    <li><strong>Symmetry can make a method fragile.</strong> Pure TPMS are highly symmetric, with degenerate critical points where the curve directions are undefined. Tracing has to detect and skip these regions. I'm also planning a second method: gradient-flow curves through the volume, integrated with ode45, which suits gradient and roughness mapping.</li>
-  </ul>
-  <span class="todo">Rewrite both "What I learned" lists in your own words.</span>
+  <p>Working from the gyroid's equation instead of a mesh removed noise completely and let me validate every quantity two different ways, which made me far more confident in the results. Bootstrapping over curves showed me that a number is only useful alongside its uncertainty, and some descriptors needed many more seed points than I expected. I also found that several curve descriptors simply restate point curvature, so the tool now separates new information from redundant information before anything goes into the PCA.</p>
+  <p>Finally, I learned that symmetry can work against you. Pure TPMS have degenerate points where the curve directions aren't defined, so the tracing has to detect and skip them. I am also planning a second method, gradient-flow curves through the volume integrated with ode45, which is well suited to gradient and surface-roughness mapping.</p>
 
   <h2>Links</h2>
   <ul>

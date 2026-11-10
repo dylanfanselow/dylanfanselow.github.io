@@ -23,13 +23,8 @@
 
   <div class="project-head">
     <h1>Stent FEA: a virtual test bench for stent designs</h1>
-    <p class="meta">Research project · 2026 · Python, PyFEM, finite-element analysis, ParaView</p>
-    <span class="todo">Add the context: which group or course, who it's with, and the dates.</span>
+    <p class="meta">Undergraduate research on a Master of Engineering project · Gu Research Group, UC Berkeley · 2026 · Python, PyFEM, finite-element analysis, ParaView</p>
     <p class="summary">I wrote a Python pipeline that generates stent designs, or imports a flat stent drawing, wraps each one onto a cylinder as 3D beams, and runs the same finite-element tests on every design so they can be compared directly.</p>
-    <ul class="page-links">
-      <li><a href="https://github.com/dylanfanselow/pyFEM">Code on GitHub</a></li>
-    </ul>
-    <span class="todo">The pyFEM repo isn't public yet. Upload it, or point this link at the right URL.</span>
   </div>
 
   <figure class="hero-fig wide">
@@ -113,17 +108,12 @@
   </figure>
 
   <h2>What I learned</h2>
-  <ul class="learned">
-    <li><strong>Linear stiffness can mislead.</strong> The Turing stents were about 12× stiffer radially than the diamond, which looks like a win. But the plastic cycle showed a few short struts taking most of the deformation, with strains far past what 316L survives. Design comparisons need the nonlinear test, not just the linear one.</li>
-    <li><strong>Validate each piece against something you can calculate by hand.</strong> Every new element and load case got a check against an exact answer before I used it. That caught real bugs early and gave me grounds to trust the design comparisons.</li>
-    <li><strong>When a solver stalls, find out why before changing settings.</strong> The crimp stall looked like a convergence problem. Ruling out material, tangent, contact stiffness and mesh one at a time showed it was a physical twisting instability, which pointed to the right fix.</li>
-    <li><strong>Be clear about what a model can't tell you.</strong> Beam elements treat junctions as points, the balloon is rigid and there's no strut-to-strut contact. I kept a written list of limitations next to the results, so the numbers are used to rank designs, not as absolute predictions.</li>
-  </ul>
-  <span class="todo">Rewrite "What I learned" in your own words. Add anything personal: what surprised you, or what you'd do differently.</span>
+  <p>Going into this project, I assumed a stiffer stent was a better stent, and the linear tests seemed to agree. The Turing designs were about 12 times stiffer radially than the diamond. It was only once I built the plastic crimp-and-balloon test that I saw the full picture: a few short struts were taking almost all of the deformation, with strains far beyond what 316L steel can survive. That taught me that one good-looking number can hide the real story, and that a design has to be tested the way it will actually be used.</p>
+  <p>I also learned to check every piece of the model against something I could calculate by hand before trusting it. When the re-entrant and Turing crimps stalled, it was tempting to keep adjusting solver settings. Instead, I ruled out one cause at a time until it became clear that the stent itself was twisting, which pointed straight to the right fix. Finally, I learned to be honest about what a model can't tell you. I kept a written list of limitations next to the results, so the numbers are used to compare designs rather than oversold as exact predictions.</p>
 
   <h2>Links</h2>
   <ul>
-    <li><a href="https://github.com/dylanfanselow/pyFEM">Source code and full write-up</a> (README and docs/DETAILS.md)</li>
+    <li>The source code and full technical write-up are in a private repository, available on request: <a href="mailto:dylan.fanselow@berkeley.edu">email me</a>.</li>
     <li><a href="https://github.com/jjcremmers/PyFEM">PyFEM</a>, the open-source finite-element solver this builds on</li>
   </ul>
 </main>

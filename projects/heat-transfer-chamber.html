@@ -23,7 +23,7 @@
 
   <div class="project-head">
     <h1>Heat transfer chamber: 3D-printed lattices as heat exchangers</h1>
-    <p class="meta">Research · 2026 · SolidWorks, FDM 3D printing, electroplating, Ansys Fluent</p>
+    <p class="meta">Undergraduate research · Gu Research Group, UC Berkeley · 2026 · SolidWorks, FDM 3D printing, electroplating, Ansys Fluent</p>
     <p class="summary">A test chamber for measuring how well 3D-printed, electroplated TPMS lattices move heat away from a hot plate, and the CFD and machine-learning plan for choosing which lattices to build next.</p>
   </div>
 
@@ -41,7 +41,6 @@
   </ul>
   <p>The open problem is consistency. Electroplating a complex lattice evenly is hard: coatings build up at exposed edges and corners and thin out inside. The project, <em>Active learning optimization of electroplating for enhanced coating uniformity and thermal properties</em>, aims to link lattice geometry, plating conditions and thermal performance so you can choose a lattice for the property you care about.</p>
   <p>The work is with Alan, mentored by Brennan Birn, in collaboration with Yuxin Hu and Prof. Peter Hosemann.</p>
-  <span class="todo">Check the names, roles and group or course here. Also say how this connects to the earlier capstone CFD pipeline, if you want it mentioned.</span>
 
   <h2>What I did</h2>
 
@@ -51,7 +50,6 @@
     <img src="../assets/img/chamber/test_chamber_view2.jpg" alt="Second view of the test chamber CAD model" loading="lazy">
     <figcaption>Another view of the chamber, showing the specimen pocket over the copper plate.</figcaption>
   </figure>
-  <span class="todo">Your literature-review deck credits Alan with the chamber CAD, but your resume says you designed it. Make this section match what you did, and add details: dimensions, sensors (thermocouples, pressure, IR camera), and design iterations.</span>
 
   <h3>Printed, electroplated specimens</h3>
   <p>The specimens are FDM-printed TPMS lattices, electroplated to give them a metal surface for conductivity and durability.</p>
@@ -65,17 +63,13 @@
   <ol>
     <li><strong>Digital lattice metrics:</strong> curvature descriptors for hybrid lattices, from my <a href="tpms-curvature.html">MATLAB curvature tool</a>.</li>
     <li><strong>Computational plating models:</strong> fixed-mesh electrochemical simulation, possibly smoothed-particle hydrodynamics, to predict coating thickness.</li>
-    <li><strong>Experiments:</strong> coating uniformity measured by computer vision on cross-sections, and thermal performance from the chamber (with IR imaging and CFD) and pressure drop.</li>
+    <li><strong>Experiments:</strong> coating uniformity measured by computer vision on cross-sections, and thermal performance from the chamber (with IR imaging) and pressure drop.</li>
   </ol>
-  <span class="todo">Add results from the chamber once you have them, such as a temperature or IR plot, or plated against unplated performance.</span>
+  <p>We are building the optimizer around a genetic algorithm, the approach used in the literature to maximize a multi-response desirability function for nickel plating. CFD in Ansys Fluent is planned next, so simulated thermal performance can sit alongside the chamber measurements.</p>
 
   <h2>What I learned</h2>
-  <ul class="learned">
-    <li><strong>Thermal performance is a trade-off.</strong> More surface area and thicker plating move more heat, but every added feature costs pressure drop. The chamber has to measure both, or a "better" lattice might just be harder to push fluid through.</li>
-    <li><strong>Manufacturing is part of the design.</strong> How evenly a lattice plates depends on its geometry. That's why curvature descriptors belong in the same model as the thermal tests.</li>
-    <li><strong>Read the field before building.</strong> The literature review showed what had already been measured, what nobody had tried (most plating studies use one lattice type and no physical thermal test), and where our data could add something new.</li>
-  </ul>
-  <span class="todo">Rewrite in your own words, especially the CAD and hands-on lessons (design for sealing and printability, plating defects such as dendrites).</span>
+  <p>This project showed me that designing a heat exchanger is always a trade-off. More surface area and thicker plating move more heat, but every added feature makes it harder to push fluid through. That is why we built the chamber to measure both temperature and pressure drop, so a lattice that looks better on one metric can't hide a cost on the other.</p>
+  <p>It also changed how I think about manufacturing. How evenly a lattice plates depends on its geometry, so the shape we design and the process we use to make it can't be treated separately. That is exactly why my curvature descriptors sit in the same model as the plating and thermal tests. The literature review taught me to read the field before building. It showed us what had already been measured, what hadn't been tried, since most studies test a single lattice type or only simulate, and where our data on over 200 lattices could add something new.</p>
 </main>
 
 <footer class="site-footer"><div class="wrap">© 2026 Dylan Fanselow · <a href="../index.html">Home</a></div></footer>
