@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stent FEA · Dylan Fanselow</title>
+  <meta name="description" content="A virtual mechanical test bench for coronary stent designs: diamond, re-entrant (auxetic) and Turing-pattern stents tested with the same finite-element load cases.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Dylan Fanselow</a>
+    <nav class="nav"><a href="../index.html#research">Research</a><a href="../index.html#fun">For fun</a><a href="https://github.com/dylanfanselow">GitHub</a></nav>
+  </div>
+</header>
+
+<main class="article">
+  <p class="crumb"><a href="../index.html#research">← All projects</a></p>
+
+  <div class="project-head">
+    <h1>Stent FEA: a virtual test bench for stent designs</h1>
+    <p class="meta">Research project · 2026 · Python, PyFEM, finite-element analysis, ParaView</p>
+    <span class="todo">Add the context: which group or course, who it's with, and the dates.</span>
+    <p class="summary">I wrote a Python pipeline that generates stent designs, or imports a flat stent drawing, wraps each one onto a cylinder as 3D beams, and runs the same finite-element tests on every design so they can be compared directly.</p>
+    <ul class="page-links">
+      <li><a href="https://github.com/dylanfanselow/pyFEM">Code on GitHub</a></li>
+    </ul>
+    <span class="todo">The pyFEM repo isn't public yet. Upload it, or point this link at the right URL.</span>
+  </div>
+
+  <figure class="hero-fig wide">
+    <img src="../assets/img/stent/turing_gallery.png" alt="Six Turing-pattern stent designs from different random seeds, each shown as a flat pattern">
+    <figcaption>Six Turing-pattern stents, each grown from a different random seed using a Gray–Scott reaction–diffusion simulation.</figcaption>
+  </figure>
+
+  <h2>The project</h2>
+  <p>Coronary stents are small metal mesh tubes that are crimped onto a balloon, pushed through an artery and expanded to hold it open. The strut pattern drives almost everything that matters: how hard the stent pushes back against the artery, how easily it bends through curved vessels, how much it shortens when expanded, and how far its struts strain on the way.</p>
+  <p>The goal was a bench where any strut pattern, whether a standard diamond, an auxetic (negative Poisson's ratio) design or an organic pattern grown by a reaction–diffusion simulation, goes through the same tests and produces the same metrics. That makes a new design idea something you can test rather than argue about. Material: 316L stainless steel, 3.0 mm diameter, about 10 mm long.</p>
+
+  <h2>What I did</h2>
+
+  <h3>Three design generators, plus an importer</h3>
+  <ul>
+    <li><strong>Diamond:</strong> the conventional baseline.</li>
+    <li><strong>Re-entrant (auxetic):</strong> zig-zag rings joined by axial walls into inward-pointing bow-tie cells. Squeezing it makes it shorter, the opposite of a diamond, which is why auxetic stents are studied as a way to cancel foreshortening.</li>
+    <li><strong>Turing patterns:</strong> a Gray–Scott simulation grows spots on the unrolled stent surface, and I extract a strut network from them. Changing the diffusion rate locally changes the cell size locally, so I added "hot spots", patches of denser or bigger cells placed anywhere on the stent.</li>
+    <li><strong>Importer:</strong> reads a flat pattern drawing (DXF, SVG or CSV), rebuilds the junctions, stitches the seam and runs the same tests.</li>
+  </ul>
+
+  <div class="grid-3">
+    <figure><img src="../assets/img/stent/diamond_preview.png" alt="Diamond stent preview"><figcaption>Diamond baseline</figcaption></figure>
+    <figure><img src="../assets/img/stent/reentrant_preview.png" alt="Re-entrant stent preview"><figcaption>Re-entrant (auxetic)</figcaption></figure>
+    <figure><img src="../assets/img/stent/turing_preview.png" alt="Turing stent preview"><figcaption>Turing pattern</figcaption></figure>
+  </div>
+
+  <h3>The same tests on every design</h3>
+  <p>Each design is meshed with 3D Timoshenko beams and solved in <a href="https://github.com/jjcremmers/PyFEM">PyFEM</a> under two load cases:</p>
+  <ul>
+    <li><strong>Radial:</strong> 100 mmHg of pressure squeezing the stent, standing in for the artery.</li>
+    <li><strong>Pure bending:</strong> the stent following a curved vessel.</li>
+  </ul>
+  <p>From these come radial stiffness, bending stiffness, Poisson's ratio and foreshortening, a dog-bone index (whether the ends are softer than the middle), peak strut stress, the pulsatile stress from a heartbeat, and a crimp strain factor (how much the worst strut strains per unit change in diameter).</p>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Metric</th><th class="num">Diamond</th><th class="num">Re-entrant</th><th class="num">Turing</th><th class="num">Turing, large cells</th></tr></thead>
+      <tbody>
+        <tr><td>Metal coverage (%)</td><td class="num">19.7</td><td class="num">21.8</td><td class="num">18.5</td><td class="num">9.7</td></tr>
+        <tr><td>Radial stiffness (N/mm)</td><td class="num">360</td><td class="num">2969</td><td class="num">4445</td><td class="num">446</td></tr>
+        <tr><td>Bending stiffness (N·mm²)</td><td class="num">810</td><td class="num">291</td><td class="num">1659</td><td class="num">226</td></tr>
+        <tr><td>Poisson's ratio</td><td class="num">0.34</td><td class="num">−1.36</td><td class="num">0.69</td><td class="num">0.64</td></tr>
+        <tr><td>Dog-bone index</td><td class="num">1.15</td><td class="num">0.85</td><td class="num">3.05</td><td class="num">5.43</td></tr>
+        <tr><td>Crimp strain factor</td><td class="num">0.18</td><td class="num">0.63</td><td class="num">1.77</td><td class="num">0.71</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Checking the numbers before trusting them</h3>
+  <p>I checked the model against known answers before using it to compare designs:</p>
+  <ul>
+    <li>Strut strains match hand-calculated cantilever bending to within 0.01%.</li>
+    <li>The diamond's Poisson's ratio (0.337) matches the hinge-lattice prediction within 3%.</li>
+    <li>The re-entrant design's Poisson's ratio (−1.36) matches Gibson &amp; Ashby honeycomb theory within 6%.</li>
+    <li>An independent numpy beam solver agrees with PyFEM within 0.8–2.5%.</li>
+    <li>In a mesh-convergence study, the stiffness metrics settle to about 1%.</li>
+  </ul>
+
+  <h3>Plasticity, and the full crimp-and-balloon cycle</h3>
+  <p>Linear tests can't show what happens when a stent is actually deployed, so I wrote a yielding beam element: each strut cross-section is split into an 8 × 8 grid of fibres that yield and harden independently. I validated it against exact solutions, then built two tests on it:</p>
+  <ul>
+    <li><strong>Free expansion:</strong> recoil, foreshortening and dog-boning.</li>
+    <li><strong>The full deployment cycle:</strong> crimp from 1.8 to 1.0 mm with a rigid crimper, release, expand to 3.0 mm with a rigid balloon, and deflate.</li>
+  </ul>
+  <p>The re-entrant and Turing designs stalled partway through the crimp. I traced the stall to a real twisting instability (it wasn't a solver setting), and added Abaqus-style automatic stabilization to carry the run through it.</p>
+
+  <div class="grid-2">
+    <figure><img src="../assets/img/stent/diamond_crimp_balloon_cycle.gif" alt="Animation of the diamond stent being crimped and then expanded by a balloon, struts coloured by plastic strain" loading="lazy"><figcaption>Diamond, crimp → release → balloon → deflate. Struts are coloured by plastic strain, next to the force–diameter path.</figcaption></figure>
+    <figure><img src="../assets/img/stent/reentrant_crimp_balloon_cycle.gif" alt="Animation of the re-entrant stent crimp and balloon cycle" loading="lazy"><figcaption>The re-entrant design in the same cycle. It lengthens by 45% as its cells unfold.</figcaption></figure>
+  </div>
+
+  <figure>
+    <img src="../assets/img/stent/turing_hotspots_heatmap.png" alt="Two heatmaps: requested cell size and the cell size the Turing pattern actually formed" loading="lazy">
+    <figcaption>Turing hot spots: the cell size I asked for (left) against what the pattern actually formed (right). Dense patches come out clearly, while big-cell patches fall short because only two or three cells fit inside them.</figcaption>
+  </figure>
+
+  <h2>What I learned</h2>
+  <ul class="learned">
+    <li><strong>Linear stiffness can mislead.</strong> The Turing stents were about 12× stiffer radially than the diamond, which looks like a win. But the plastic cycle showed a few short struts taking most of the deformation, with strains far past what 316L survives. Design comparisons need the nonlinear test, not just the linear one.</li>
+    <li><strong>Validate each piece against something you can calculate by hand.</strong> Every new element and load case got a check against an exact answer before I used it. That caught real bugs early and gave me grounds to trust the design comparisons.</li>
+    <li><strong>When a solver stalls, find out why before changing settings.</strong> The crimp stall looked like a convergence problem. Ruling out material, tangent, contact stiffness and mesh one at a time showed it was a physical twisting instability, which pointed to the right fix.</li>
+    <li><strong>Be clear about what a model can't tell you.</strong> Beam elements treat junctions as points, the balloon is rigid and there's no strut-to-strut contact. I kept a written list of limitations next to the results, so the numbers are used to rank designs, not as absolute predictions.</li>
+  </ul>
+  <span class="todo">Rewrite "What I learned" in your own words. Add anything personal: what surprised you, or what you'd do differently.</span>
+
+  <h2>Links</h2>
+  <ul>
+    <li><a href="https://github.com/dylanfanselow/pyFEM">Source code and full write-up</a> (README and docs/DETAILS.md)</li>
+    <li><a href="https://github.com/jjcremmers/PyFEM">PyFEM</a>, the open-source finite-element solver this builds on</li>
+  </ul>
+</main>
+
+<footer class="site-footer"><div class="wrap">© 2026 Dylan Fanselow · <a href="../index.html">Home</a></div></footer>
+</body>
+</html>
