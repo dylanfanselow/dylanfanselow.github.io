@@ -23,7 +23,7 @@
 
   <div class="project-head">
     <h1>3D-printed composite airfoils: strength vs. cost</h1>
-    <p class="meta">Team project (6 people) · ME 127/227 Composite Materials, UC Berkeley · Spring 2026 · ANSYS, Markforged X7, Instron</p>
+    <p class="meta">Team project (6 people) · ME 127/227 Composite Materials, UC Berkeley · Spring 2026 · ANSYS, Ansys Fluent, Markforged X7, Instron</p>
     <p class="summary">We printed identical NACA 2412 airfoils reinforced with three continuous fibres (carbon fiber, fiberglass and Kevlar, all in an Onyx matrix), simulated them in ANSYS, broke them in three-point bending, and weighed the results against what each one cost to make.</p>
   </div>
 
@@ -39,6 +39,7 @@
   <ul>
     <li><strong>Manufacturing:</strong> printed on a Markforged X7 with the same 37% triangular infill for all three. Fibre was biased toward the upper and lower surfaces at the same heights in every part. Two specimens per material, limited by budget.</li>
     <li><strong>FEA:</strong> a layered composite model in ANSYS with orthotropic properties for each fibre. Ends were fixed and a point load applied at mid-span to mirror the bend test.</li>
+    <li><strong>CFD:</strong> we also modelled airflow over the airfoil in Ansys Fluent to estimate its lift, drag and moment coefficients.</li>
     <li><strong>Testing:</strong> three-point bending on an Instron at 3 mm/min (derived from ASTM D790 for a 127 mm span), recording load against extension.</li>
   </ul>
 
