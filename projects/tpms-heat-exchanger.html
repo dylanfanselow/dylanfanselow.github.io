@@ -27,14 +27,9 @@
     <p class="summary">The project was "Optimizing the process of designing cooling-channel geometry using machine learning". I picked it up after the previous students had left, with nothing that ran end to end, and rebuilt it from scratch, starting with the geometry.</p>
   </div>
 
-  <figure class="hero-fig">
-    <div class="img-slot">Hero image: your CAD of the TPMS cooling channel (nTop or SolidWorks screenshot)<br>→ save as assets/img/capstone/hero.jpg</div>
-  </figure>
-
   <h2>The project</h2>
   <p>TPMS lattices make excellent cooling channels: lots of surface area, smooth flow paths, and they can only be made by 3D printing. But each design has to be checked with a conjugate-heat-transfer CFD run that takes hours. The idea was to generate many lattice geometries automatically, simulate them, and train a surrogate model that suggests which geometry to simulate next, so you spend as few expensive CFD runs as possible.</p>
   <p>When I took it over, the earlier team had gone. What was left was a set of single-case scripts and notebooks, a missing batch-geometry step, and boundary conditions that didn't agree between files.</p>
-  <span class="todo">Add a sentence on the state you found it in, in your own words: what was missing, and what you decided to keep or throw out.</span>
 
   <h2>What I did</h2>
 
@@ -46,12 +41,6 @@
     <li>Wrote the batch driver that turns a design space into one JSON input per geometry, runs nTop's command-line tool, and records a manifest of every case.</li>
     <li>Started on hybrid and graded TPMS, which blend lattice families smoothly using a Shepard inverse-distance kernel.</li>
   </ul>
-  <span class="todo">This section should be mostly yours. Add your CAD work in detail (the chip/housing model, the test chamber if it belongs here, design decisions and iterations) with 2–3 screenshots.</span>
-
-  <div class="grid-2">
-    <div class="img-slot">CAD screenshot 1<br>→ assets/img/capstone/cad1.jpg</div>
-    <div class="img-slot">CAD screenshot 2<br>→ assets/img/capstone/cad2.jpg</div>
-  </div>
 
   <h3>Rebuilding the pipeline around it</h3>
   <ul>
@@ -60,7 +49,6 @@
     <li>Defined what "done correctly" means at every stage. For example, every case must close its heat balance, and failures are logged instead of silently dropped. I also wrote onboarding docs so the next team can pick it up without starting over.</li>
     <li>The ML stage already runs: it fits a Gaussian-process model to the seed data and suggests the next geometries to simulate.</li>
   </ul>
-  <span class="todo">Check this list against what you personally built, and add results if you have any (number of cases run, a CFD temperature or flow image, a surrogate fit plot).</span>
 
   <h2>What I learned</h2>
   <ul class="learned">
@@ -68,7 +56,6 @@
     <li><strong>Interfaces matter as much as the parts.</strong> A single misnamed boundary zone in the geometry breaks the CFD setup two stages later. Writing those names down as an explicit contract mattered more than any one script.</li>
     <li><strong>Write things down for the next person.</strong> The project stalled because knowledge left with the people. Documentation and a single source of truth for settings are what let it survive the next handover.</li>
   </ul>
-  <span class="todo">Rewrite in your own voice. The CAD side probably has its own lessons (design for printability, meshing-friendly geometry, …).</span>
 </main>
 
 <footer class="site-footer"><div class="wrap">© 2026 Dylan Fanselow · <a href="../index.html">Home</a></div></footer>
